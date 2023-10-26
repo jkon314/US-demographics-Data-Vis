@@ -37,7 +37,7 @@ for state in states:
     stateDroptions.append({'label':'{}'.format(state, state), 'value':state})
 #print(stateDf)
 
-# Customize your own Layout
+# Set up layout
 app.layout = dbc.Container([
 
     mytext,
@@ -74,9 +74,9 @@ app.layout = dbc.Container([
 
 @app.callback(
     [Output(component_id='usMap', component_property='figure')],
-   # [Output(component_id='stateMap',component_property='figure')],
+    [Output(component_id='stateMap',component_property='figure')],
     [Input(component_id='selectCategory', component_property='value')],
-    #[Input(component_id='selectState',component_property='value')]
+    [Input(component_id='selectState',component_property='value')]
 )
 
 def update_us_map(category,state):
@@ -96,17 +96,15 @@ def update_us_map(category,state):
 
         )
 
-    #dfCounty = df.loc[df['State'] == state]
+    dfCounty = df.copy().loc[df['State'] == state]
 
-   # fig2 = px.bar(
-    #    
-     #   dfCounty,
-      #  x=category,
-       # y='County'
-#
-#
- #       )
-    return [fig1]#,[fig2]
-# Run app
+    fig2 = px.bar(
+        
+       dfCounty,
+        x=category,
+        y='County'
+       )
+    return fig1,fig2
+# Run app locally
 if __name__=='__main__':
     app.run_server(port=8051)
