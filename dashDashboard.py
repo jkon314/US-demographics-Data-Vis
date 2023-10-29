@@ -1,7 +1,7 @@
 # If you prefer to run the code online instead of on your computer click:
 # https://github.com/Coding-with-Adam/Dash-by-Plotly#execute-code-in-browser
 
-from dash import Dash, dcc, Input, Output
+from dash import Dash, dcc, Input, Output, html
 
 import dash_bootstrap_components as dbc  
 import pandas as pd
@@ -17,8 +17,10 @@ stateDF = df.drop(columns='County') # i know this isn't accurate but couldnt fin
 
 stateDF.groupby('State').mean()
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-mytext = dcc.Markdown(children="#US Demographics Dashboard")
+app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
+
+
+mytext = dcc.Markdown(children="US Demographics Dashboard")
 
 droptions = []
 
@@ -40,9 +42,11 @@ for state in states:
 # Set up layout
 app.layout = dbc.Container([
 
-    mytext,
-    dbc.Alert("Hi there",color="success"),
-    dcc.Dropdown(id="selectCategory", options=droptions, value="Age.Percent Under 18 Years"),
+    html.H1(mytext),
+
+    html.H2('Select a Category to view below.'),
+    #dbc.Alert("Hi there",color="success"),
+    dcc.Dropdown(id="selectCategory", options=droptions, value="Age.Percent Under 18 Years", style={'marginBottom': 50}),
 
     dcc.Graph(id='usMap',figure=px.choropleth(
         data_frame = stateDF,
@@ -58,9 +62,10 @@ app.layout = dbc.Container([
 
 
 
-        )),
+        ), style={'marginBottom': 50}),
 
-    dcc.Dropdown(id="selectState", options=stateDroptions, value="PA"),
+    html.H2('Select a State for by county breakdown'),
+    dcc.Dropdown(id="selectState", options=stateDroptions, value="PA", style={'marginBottom': 50}),
     dcc.Graph(id='stateMap', figure=px.bar(
         
         df.loc[df['State'] == 'PA'],
@@ -71,6 +76,8 @@ app.layout = dbc.Container([
         ))
 
     ])
+
+#, style='background-color:#23203d;'
 
 @app.callback(
     [Output(component_id='usMap', component_property='figure')],
